@@ -41,13 +41,10 @@ RUN groupadd -r outline && useradd -r -g outline outline
 
 WORKDIR /app
 
-# Copy built application (including your chatbot)
+# Copy built application (including your chatbot and frontend)
 COPY --from=base --chown=outline:outline /app/build ./build
 COPY --from=base --chown=outline:outline /app/package.json ./package.json
 COPY --from=base --chown=outline:outline /app/yarn.lock ./yarn.lock
-
-# Copy frontend build files
-COPY --from=base --chown=outline:outline /app/app/.vite ./app/.vite
 
 # Install production dependencies only
 RUN yarn install --frozen-lockfile --production=true && \
