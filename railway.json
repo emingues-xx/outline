@@ -6,8 +6,6 @@
   },
   "deploy": {
     "startCommand": "dumb-init sh -c 'yarn db:migrate && node build/server/index.js --services=cron,collaboration,websockets,admin,web,worker'",
-    "healthcheckPath": "/health",
-    "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   },
