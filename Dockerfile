@@ -63,6 +63,9 @@ COPY --chown=outline:outline server/migrations ./server/migrations
 RUN mkdir -p /app/data /var/lib/outline/data && \
   chown -R outline:outline /app/data /var/lib/outline/data
 
+# Create empty .env file to prevent MISSING_ENV_FILE error
+RUN touch /app/.env && chown outline:outline /app/.env
+
 USER outline
 
 # Railway will set the PORT environment variable
