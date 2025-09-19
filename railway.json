@@ -14,7 +14,7 @@
   "volumes": [
     {
       "name": "outline-data",
-      "mountPath": "/app/data"
+      "mountPath": "/var/lib/outline/data"
     }
   ]
 }

@@ -40,7 +40,7 @@ No dashboard do Railway:
 3. **Volume (Opcional):**
    - Clique em "+ New" → "Volume"
    - Nome: `outline-data`
-   - Mount Path: `/app/data`
+   - Mount Path: `/var/lib/outline/data`
    - Isso permitirá persistência de arquivos locais
 
 ### 4. **Configurar Variáveis de Ambiente**

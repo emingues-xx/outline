@@ -55,8 +55,8 @@ COPY --chown=outline:outline public ./public
 COPY --chown=outline:outline server/static ./server/static
 
 # Create data directory and set permissions
-RUN mkdir -p /app/data && \
-  chown -R outline:outline /app/data
+RUN mkdir -p /app/data /var/lib/outline/data && \
+  chown -R outline:outline /app/data /var/lib/outline/data
 
 USER outline
 
