@@ -62,7 +62,7 @@ CHATBOT_WEBHOOK_URL=https://seu-chatbot.railway.app/webhook/chatbot-outline
 FILE_STORAGE=local
 ```
 
-### 5. **Gerar Chaves de Segurança**
+### 5. **Gerar Chaves de Segurança** 
 
 ```bash
 # SECRET_KEY (32 bytes em hex)
