@@ -11,7 +11,7 @@ let httpsConfig: ServerOptions["https"] | undefined;
 let host: string | undefined;
 
 if (environment.NODE_ENV === "development") {
-  host = host = new URL(environment.URL!).hostname;
+  host = environment.URL ? new URL(environment.URL).hostname : undefined;
 
   try {
     httpsConfig = {
@@ -38,9 +38,9 @@ export default () =>
       fs:
         environment.NODE_ENV === "development"
           ? {
-              // Allow serving files from one level up to the project root
-              allow: [".."],
-            }
+            // Allow serving files from one level up to the project root
+            allow: [".."],
+          }
           : { strict: true },
     },
     plugins: [

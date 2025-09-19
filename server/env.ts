@@ -237,6 +237,18 @@ export class Environment {
     .replace(/^http/, "ws");
 
   /**
+   * The URL for the chatbot webhook service.
+   */
+  @Public
+  @IsOptional()
+  @IsUrl({
+    require_tld: false,
+    require_protocol: true,
+    protocols: ["http", "https"],
+  })
+  public CHATBOT_WEBHOOK_URL = this.toOptionalString(environment.CHATBOT_WEBHOOK_URL);
+
+  /**
    * The maximum number of network clients that can be connected to a single
    * document at once. Defaults to 100.
    */

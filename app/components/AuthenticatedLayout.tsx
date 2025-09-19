@@ -39,6 +39,7 @@ const DocumentHistory = lazyWithRetry(
 );
 
 const CommandBar = lazyWithRetry(() => import("~/components/CommandBar"));
+const ChatbotWrapper = lazyWithRetry(() => import("~/components/ChatbotWrapper"));
 
 type Props = {
   children?: React.ReactNode;
@@ -132,6 +133,9 @@ const AuthenticatedLayout: React.FC = ({ children }: Props) => {
           {children}
           <React.Suspense fallback={null}>
             <CommandBar />
+          </React.Suspense>
+          <React.Suspense fallback={null}>
+            <ChatbotWrapper />
           </React.Suspense>
         </Layout>
       </PortalContext.Provider>
