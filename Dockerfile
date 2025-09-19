@@ -34,6 +34,7 @@ FROM node:20-slim AS production
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \
   dumb-init \
+  redis-tools \
   && rm -rf /var/lib/apt/lists/*
 
 # Create app user
