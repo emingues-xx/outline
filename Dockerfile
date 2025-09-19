@@ -54,6 +54,11 @@ RUN yarn install --frozen-lockfile --production=true && \
 COPY --chown=outline:outline public ./public
 COPY --chown=outline:outline server/static ./server/static
 
+# Copy Sequelize configuration and migrations
+COPY --chown=outline:outline .sequelizerc ./
+COPY --chown=outline:outline server/config ./server/config
+COPY --chown=outline:outline server/migrations ./server/migrations
+
 # Create data directory and set permissions
 RUN mkdir -p /app/data /var/lib/outline/data && \
   chown -R outline:outline /app/data /var/lib/outline/data
