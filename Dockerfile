@@ -64,4 +64,4 @@ USER outline
 EXPOSE 3000
 
 # Railway expects the app to listen on the PORT environment variable
-CMD ["dumb-init", "node", "build/server/index.js", "--services=cron,collaboration,websockets,admin,web,worker"]
+CMD ["dumb-init", "sh", "-c", "yarn db:migrate && node build/server/index.js --services=cron,collaboration,websockets,admin,web,worker"]

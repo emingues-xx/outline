@@ -75,8 +75,9 @@ openssl rand -base64 32
 ### 6. **Deploy**
 
 1. Railway fará o build automaticamente
-2. O deploy será iniciado após o build
-3. Acesse a URL fornecida pelo Railway
+2. **As migrations do banco serão executadas automaticamente** durante o deploy
+3. O deploy será iniciado após o build e migrations
+4. Acesse a URL fornecida pelo Railway
 
 ## 🔧 Configurações Avançadas
 
@@ -120,6 +121,11 @@ SLACK_CLIENT_SECRET=seu-slack-client-secret
 - Verifique as variáveis de ambiente
 - Confirme se `DATABASE_URL` e `REDIS_URL` estão configuradas
 - Veja os logs de runtime no Railway
+
+### **Erro "relation does not exist"**
+- As migrations são executadas automaticamente no deploy
+- Se o erro persistir, verifique se o PostgreSQL está rodando
+- Confirme se a `DATABASE_URL` está correta
 
 ### **Chatbot Não Funciona**
 - Confirme se `CHATBOT_WEBHOOK_URL` está configurada
