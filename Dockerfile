@@ -16,17 +16,17 @@ WORKDIR /app
 # Copy package files
 COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN yarn install --frozen-lockfile --production=false
+# Install dependencies with memory optimization
+RUN yarn install --frozen-lockfile --production=false --network-timeout 1000000
 
 # Copy ALL source code (including your chatbot modifications)
 COPY . .
 
-# Build the application
-RUN yarn build:server
+# Build the application with memory optimization
+RUN NODE_OPTIONS="--max-old-space-size=2048" yarn build:server
 
-# Build the frontend (Vite)
-RUN VITE_CJS_IGNORE_WARNING=true yarn vite build
+# Build the frontend (Vite) with memory optimization
+RUN NODE_OPTIONS="--max-old-space-size=2048" VITE_CJS_IGNORE_WARNING=true yarn vite build
 
 # Production stage
 FROM node:20-slim AS production
@@ -47,8 +47,8 @@ COPY --from=base --chown=outline:outline /app/build ./build
 COPY --from=base --chown=outline:outline /app/package.json ./package.json
 COPY --from=base --chown=outline:outline /app/yarn.lock ./yarn.lock
 
-# Install production dependencies only
-RUN yarn install --frozen-lockfile --production=true && \
+# Install production dependencies only with memory optimization
+RUN NODE_OPTIONS="--max-old-space-size=1024" yarn install --frozen-lockfile --production=true && \
   yarn cache clean
 
 # Copy static files
@@ -73,4 +73,4 @@ USER outline
 EXPOSE 3000
 
 # Railway expects the app to listen on the PORT environment variable
-CMD ["dumb-init", "sh", "-c", "yarn db:migrate && node build/server/index.js --services=cron,collaboration,websockets,admin,web,worker"]
+CMD ["dumb-init", "sh", "-c", "NODE_OPTIONS='--max-old-space-size=1024' yarn db:migrate && NODE_OPTIONS='--max-old-space-size=1024' node build/server/index.js --services=cron,collaboration,websockets,admin,web,worker"]
