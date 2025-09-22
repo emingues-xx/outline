@@ -76,6 +76,14 @@ RUN echo "=== Checking shared directory structure ===" && \
   echo "=== Checking if locales are accessible from routes ===" && \
   ls -la /app/build/server/routes/../../shared/i18n/locales/ || echo "Path not found"
 
+# Fix locales path - create symlink or copy to expected location
+RUN echo "=== Fixing locales path ===" && \
+  mkdir -p /app/build/shared/i18n/locales && \
+  cp -r /app/shared/i18n/locales/* /app/build/shared/i18n/locales/ && \
+  echo "=== Verifying fixed structure ===" && \
+  ls -la /app/build/shared/i18n/locales/ && \
+  ls -la /app/build/shared/i18n/locales/pt_BR/
+
 # Create empty .env file to prevent MISSING_ENV_FILE error
 RUN touch /app/.env && chown outline:outline /app/.env
 
