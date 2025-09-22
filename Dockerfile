@@ -54,6 +54,7 @@ RUN NODE_OPTIONS="--max-old-space-size=1024" yarn install --frozen-lockfile --pr
 # Copy static files
 COPY --chown=outline:outline public ./public
 COPY --chown=outline:outline server/static ./server/static
+COPY --chown=outline:outline shared ./shared
 
 # Copy Sequelize configuration and migrations
 COPY --chown=outline:outline .sequelizerc ./
