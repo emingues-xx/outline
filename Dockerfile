@@ -28,6 +28,13 @@ RUN NODE_OPTIONS="--max-old-space-size=2048" yarn build:server
 # Build the frontend (Vite) with memory optimization
 RUN NODE_OPTIONS="--max-old-space-size=2048" VITE_CJS_IGNORE_WARNING=true yarn vite build
 
+# Debug: Check if Vite build generated the manifest
+RUN echo "=== Checking Vite build output ===" && \
+  ls -la /app/build/ && \
+  ls -la /app/build/app/ && \
+  ls -la /app/build/app/.vite/ && \
+  cat /app/build/app/.vite/manifest.json | head -20 || echo "Manifest not found"
+
 # Production stage
 FROM node:20-slim AS production
 
