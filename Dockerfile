@@ -30,7 +30,11 @@ RUN echo "=== CACHE BUST: $(date) ===" && \
   echo "=== Checking if vite is available ===" && \
   yarn list vite || echo "Vite not found in yarn list" && \
   echo "=== Checking package.json scripts ===" && \
-  cat package.json | grep -A 5 -B 5 "vite" || echo "No vite scripts found"
+  cat package.json | grep -A 5 -B 5 "vite" || echo "No vite scripts found" && \
+  echo "=== Checking if vite command exists ===" && \
+  which vite || echo "Vite command not found" && \
+  echo "=== Trying to run vite --version ===" && \
+  yarn vite --version || echo "Vite version check failed"
 
 # Build the frontend (Vite) with memory optimization
 RUN echo "=== Starting Vite build ===" && \
