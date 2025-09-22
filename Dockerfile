@@ -25,7 +25,7 @@ COPY . .
 # Build the application with memory optimization
 RUN NODE_OPTIONS="--max-old-space-size=2048" yarn build:server
 
-# Build the frontend (Vite) with memory optimization
+# Build the frontend (Vite) with memory optimization - FORCE REBUILD
 RUN echo "=== Starting Vite build ===" && \
   echo "=== Checking if vite is available ===" && \
   yarn list vite || echo "Vite not found in yarn list" && \
