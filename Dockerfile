@@ -27,9 +27,12 @@ RUN NODE_OPTIONS="--max-old-space-size=2048" yarn build:server
 
 # Build the frontend (Vite) with memory optimization
 RUN echo "=== Starting Vite build ===" && \
+  echo "=== Checking if vite is available ===" && \
+  yarn list vite || echo "Vite not found in yarn list" && \
+  echo "=== Trying to run vite build ===" && \
   NODE_OPTIONS="--max-old-space-size=2048" VITE_CJS_IGNORE_WARNING=true yarn vite build || \
   (echo "=== Vite build failed, trying alternative ===" && \
-   NODE_OPTIONS="--max-old-space-size=2048" yarn vite build) && \
+  NODE_OPTIONS="--max-old-space-size=2048" yarn vite build) && \
   echo "=== Vite build completed ==="
 
 # Debug: Check if Vite build generated the manifest
