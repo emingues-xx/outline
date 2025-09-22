@@ -65,6 +65,17 @@ COPY --chown=outline:outline server/migrations ./server/migrations
 RUN mkdir -p /app/data /var/lib/outline/data && \
   chown -R outline:outline /app/data /var/lib/outline/data
 
+# Debug: List directory structure to verify shared folder
+RUN echo "=== Checking shared directory structure ===" && \
+  ls -la /app/shared/ && \
+  ls -la /app/shared/i18n/ && \
+  ls -la /app/shared/i18n/locales/ && \
+  ls -la /app/shared/i18n/locales/pt_BR/ && \
+  echo "=== Checking build directory structure ===" && \
+  ls -la /app/build/server/routes/ && \
+  echo "=== Checking if locales are accessible from routes ===" && \
+  ls -la /app/build/server/routes/../../shared/i18n/locales/ || echo "Path not found"
+
 # Create empty .env file to prevent MISSING_ENV_FILE error
 RUN touch /app/.env && chown outline:outline /app/.env
 
