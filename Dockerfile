@@ -1,4 +1,4 @@
-# Multi-stage build for Outline with Chatbot on Railway
+# Multi-stage build for Outline with Chatbot on Railway - CACHE BUST $(date)
 FROM node:20-slim AS base
 
 # Install dependencies
@@ -25,8 +25,9 @@ COPY . .
 # Build the application with memory optimization
 RUN NODE_OPTIONS="--max-old-space-size=2048" yarn build:server
 
-# Build the frontend (Vite) with memory optimization - FORCE REBUILD
-RUN echo "=== Starting Vite build ===" && \
+# Build the frontend (Vite) with memory optimization - FORCE REBUILD CACHE BUST
+RUN echo "=== CACHE BUST: $(date) ===" && \
+  echo "=== Starting Vite build ===" && \
   echo "=== Checking if vite is available ===" && \
   yarn list vite || echo "Vite not found in yarn list" && \
   echo "=== Trying to run vite build ===" && \
