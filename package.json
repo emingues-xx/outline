@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf build",
-    "copy:i18n": "mkdir -p ./build/shared/i18n && cp -R ./shared/i18n/locales ./build/shared/i18n",
+    "copy:i18n": "node -e \"const fs=require('fs');const path=require('path');const src='./shared/i18n/locales';const dest='./build/shared/i18n/locales';if(!fs.existsSync('./build/shared/i18n'))fs.mkdirSync('./build/shared/i18n',{recursive:true});if(fs.existsSync(dest))fs.rmSync(dest,{recursive:true,force:true});fs.cpSync(src,dest,{recursive:true});\"",
     "build:i18n": "i18next --silent '{shared,app,server,plugins}/**/*.{ts,tsx}' && yarn copy:i18n",
     "build:server": "node ./build-windows.js",
     "build": "yarn clean && yarn vite:build && yarn build:i18n && yarn build:server",
@@ -221,6 +221,7 @@
     "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.54.2",
     "react-i18next": "^12.3.1",
+    "react-markdown": "^10.1.0",
     "react-merge-refs": "^2.1.1",
     "react-portal": "^4.3.0",
     "react-router-dom": "^5.3.4",

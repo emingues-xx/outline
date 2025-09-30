@@ -3,20 +3,21 @@ import styled from "styled-components";
 import { CloseIcon, ArrowIcon, CheckmarkIcon } from "outline-icons";
 import { useChatbotSession } from "~/hooks/useChatbotSession";
 import { ChatbotService } from "~/utils/chatbotService";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
-    id: string;
-    text: string;
-    isUser: boolean;
-    timestamp: string;
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: string;
 }
 
 const ChatbotContainer = styled.div<{ isOpen: boolean }>`
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 350px;
-  height: 500px;
+  width: 450px;
+  height: 600px;
   background: ${(props) => props.theme.background};
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
@@ -84,19 +85,72 @@ const ChatArea = styled.div`
 `;
 
 const MessageBubble = styled.div<{ isUser: boolean }>`
-  max-width: 80%;
-  padding: 8px 12px;
+  max-width: 85%;
+  padding: 12px 16px;
   border-radius: 12px;
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1.5;
   align-self: ${(props) => (props.isUser ? "flex-end" : "flex-start")};
   background: ${(props) =>
-        props.isUser ? props.theme.accent : props.theme.backgroundSecondary};
+    props.isUser ? props.theme.accent : props.theme.backgroundSecondary};
   color: ${(props) =>
-        props.isUser ? "white" : props.theme.text};
+    props.isUser ? "white" : props.theme.text};
   border: ${(props) =>
-        !props.isUser ? `1px solid ${props.theme.divider}` : "none"};
+    !props.isUser ? `1px solid ${props.theme.divider}` : "none"};
   position: relative;
+  
+  /* Markdown styling */
+  p {
+    margin: 0 0 8px 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  ul, ol {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+  
+  li {
+    margin: 4px 0;
+  }
+  
+  code {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+  }
+  
+  pre {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 8px 0;
+    
+    code {
+      background: none;
+      padding: 0;
+    }
+  }
+  
+  strong {
+    font-weight: 600;
+  }
+  
+  em {
+    font-style: italic;
+  }
+  
+  blockquote {
+    border-left: 3px solid ${(props) => props.theme.accent};
+    padding-left: 12px;
+    margin: 8px 0;
+    font-style: italic;
+  }
 `;
 
 const MessageTimestamp = styled.div<{ isUser: boolean }>`
@@ -126,7 +180,7 @@ const InputContainer = styled.div`
   align-items: center;
 `;
 
-const MessageInput = styled.input`
+const MessageInput = styled.textarea`
   flex: 1;
   padding: 10px 12px;
   border: 1px solid ${(props) => props.theme.divider};
@@ -135,6 +189,11 @@ const MessageInput = styled.input`
   color: ${(props) => props.theme.text};
   font-size: 14px;
   outline: none;
+  resize: none;
+  min-height: 20px;
+  max-height: 120px;
+  font-family: inherit;
+  line-height: 1.4;
   
   &::placeholder {
     color: ${(props) => props.theme.textSecondary};
@@ -183,153 +242,166 @@ const PoweredBy = styled.span`
 `;
 
 const Chatbot: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: "1",
-            text: "👋 Olá! Estou aqui para te ajudar com qualquer dúvida. Como posso te auxiliar hoje? 😊",
-            isUser: false,
-            timestamp: new Date().toLocaleTimeString("pt-BR", {
-                hour: "2-digit",
-                minute: "2-digit"
-            })
-        }
-    ]);
-    const [inputValue, setInputValue] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-    const sessionId = useChatbotSession();
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      text: "👋 Olá! Estou aqui para te ajudar com qualquer dúvida. Como posso te auxiliar hoje? 😊",
+      isUser: false,
+      timestamp: new Date().toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    }
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sessionId = useChatbotSession();
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() || isLoading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: inputValue,
+      isUser: true,
+      timestamp: new Date().toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
     };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+    setMessages(prev => [...prev, userMessage]);
+    const currentMessage = inputValue;
+    setInputValue("");
+    setIsLoading(true);
 
-    const handleSendMessage = async () => {
-        if (!inputValue.trim() || isLoading) return;
+    try {
+      const response = await ChatbotService.sendMessage(sessionId, currentMessage);
 
-        const userMessage: Message = {
-            id: Date.now().toString(),
-            text: inputValue,
-            isUser: true,
-            timestamp: new Date().toLocaleTimeString("pt-BR", {
-                hour: "2-digit",
-                minute: "2-digit"
-            })
-        };
-
-        setMessages(prev => [...prev, userMessage]);
-        const currentMessage = inputValue;
-        setInputValue("");
-        setIsLoading(true);
-
-        try {
-            const response = await ChatbotService.sendMessage(sessionId, currentMessage);
-
-            const botMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                text: response.response,
-                isUser: false,
-                timestamp: new Date().toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })
-            };
-            setMessages(prev => [...prev, botMessage]);
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: response.response,
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      };
+      setMessages(prev => [...prev, botMessage]);
     } catch (_error) {
       // Handle error silently
 
-            const errorMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                text: "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.",
-                isUser: false,
-                timestamp: new Date().toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })
-            };
-            setMessages(prev => [...prev, errorMessage]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.",
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-        }
-    };
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
-    return (
-        <ChatbotContainer isOpen={isOpen}>
-            <ChatbotHeader onClick={() => setIsOpen(!isOpen)}>
-                <HeaderLeft>
-                    <StatusIndicator />
-                    <HeaderTitle>Store</HeaderTitle>
-                </HeaderLeft>
-                <CloseButton onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpen(false);
-                }}>
-                    <CloseIcon size={16} />
-                </CloseButton>
-            </ChatbotHeader>
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
 
-            {isOpen && (
-                <>
-                    <ChatArea>
-                        {messages.map((message) => (
-                            <div key={message.id}>
-                                <MessageBubble isUser={message.isUser}>
-                                    {message.text}
-                                    {message.isUser && (
-                                        <MessageStatus>
-                                            <CheckmarkIcon size={12} />
-                                        </MessageStatus>
-                                    )}
-                                </MessageBubble>
-                                <MessageTimestamp isUser={message.isUser}>
-                                    {message.timestamp}
-                                </MessageTimestamp>
-                            </div>
-                        ))}
-                        {isLoading && (
-                            <MessageBubble isUser={false}>
-                                Typing...
-                            </MessageBubble>
-                        )}
-                        <div ref={messagesEndRef} />
-                    </ChatArea>
+    // Auto-resize textarea
+    const textarea = e.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+  };
 
-                    <InputArea>
-                        <InputContainer>
-                            <MessageInput
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyPress={handleKeyPress}
-                                placeholder="Write a message..."
-                                disabled={isLoading}
-                            />
-                            <SendButton
-                                onClick={handleSendMessage}
-                                disabled={!inputValue.trim() || isLoading}
-                            >
-                                <ArrowIcon size={16} />
-                            </SendButton>
-                        </InputContainer>
-                    </InputArea>
+  return (
+    <ChatbotContainer isOpen={isOpen}>
+      <ChatbotHeader onClick={() => setIsOpen(!isOpen)}>
+        <HeaderLeft>
+          <StatusIndicator />
+          <HeaderTitle>Store</HeaderTitle>
+        </HeaderLeft>
+        <CloseButton onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(false);
+        }}>
+          <CloseIcon size={16} />
+        </CloseButton>
+      </ChatbotHeader>
 
-                    <Footer>
-                        Powered by <PoweredBy>Outline</PoweredBy>
-                    </Footer>
-                </>
+      {isOpen && (
+        <>
+          <ChatArea>
+            {messages.map((message) => (
+              <div key={message.id}>
+                <MessageBubble isUser={message.isUser}>
+                  {message.isUser ? (
+                    message.text
+                  ) : (
+                    <ReactMarkdown>{message.text}</ReactMarkdown>
+                  )}
+                  {message.isUser && (
+                    <MessageStatus>
+                      <CheckmarkIcon size={12} />
+                    </MessageStatus>
+                  )}
+                </MessageBubble>
+                <MessageTimestamp isUser={message.isUser}>
+                  {message.timestamp}
+                </MessageTimestamp>
+              </div>
+            ))}
+            {isLoading && (
+              <MessageBubble isUser={false}>
+                Typing...
+              </MessageBubble>
             )}
-        </ChatbotContainer>
-    );
+            <div ref={messagesEndRef} />
+          </ChatArea>
+
+          <InputArea>
+            <InputContainer>
+              <MessageInput
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+                placeholder="Write a message..."
+                disabled={isLoading}
+              />
+              <SendButton
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isLoading}
+              >
+                <ArrowIcon size={16} />
+              </SendButton>
+            </InputContainer>
+          </InputArea>
+
+          <Footer>
+            Powered by <PoweredBy>UOL Edtech</PoweredBy>
+          </Footer>
+        </>
+      )}
+    </ChatbotContainer>
+  );
 };
 
 export default Chatbot;
