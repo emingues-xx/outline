@@ -24,7 +24,8 @@ const ChatbotContainer = styled.div<{ isOpen: boolean }>`
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  transform: ${(props) => (props.isOpen ? "translateY(0)" : "translateY(calc(100% - 60px))")};
+  transform: ${(props) =>
+    props.isOpen ? "translateY(0)" : "translateY(calc(100% - 60px))"};
   transition: transform 0.3s ease;
   border: 1px solid ${(props) => props.theme.divider};
 `;
@@ -68,7 +69,7 @@ const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.1);
   }
@@ -93,12 +94,11 @@ const MessageBubble = styled.div<{ isUser: boolean }>`
   align-self: ${(props) => (props.isUser ? "flex-end" : "flex-start")};
   background: ${(props) =>
     props.isUser ? props.theme.accent : props.theme.backgroundSecondary};
-  color: ${(props) =>
-    props.isUser ? "white" : props.theme.text};
+  color: ${(props) => (props.isUser ? "white" : props.theme.text)};
   border: ${(props) =>
     !props.isUser ? `1px solid ${props.theme.divider}` : "none"};
   position: relative;
-  
+
   /* Markdown styling */
   p {
     margin: 0 0 8px 0;
@@ -106,45 +106,46 @@ const MessageBubble = styled.div<{ isUser: boolean }>`
       margin-bottom: 0;
     }
   }
-  
-  ul, ol {
+
+  ul,
+  ol {
     margin: 8px 0;
     padding-left: 20px;
   }
-  
+
   li {
     margin: 4px 0;
   }
-  
+
   code {
     background: rgba(0, 0, 0, 0.1);
     padding: 2px 4px;
     border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
     font-size: 13px;
   }
-  
+
   pre {
     background: rgba(0, 0, 0, 0.1);
     padding: 8px;
     border-radius: 6px;
     overflow-x: auto;
     margin: 8px 0;
-    
+
     code {
       background: none;
       padding: 0;
     }
   }
-  
+
   strong {
     font-weight: 600;
   }
-  
+
   em {
     font-style: italic;
   }
-  
+
   blockquote {
     border-left: 3px solid ${(props) => props.theme.accent};
     padding-left: 12px;
@@ -194,11 +195,11 @@ const MessageInput = styled.textarea`
   max-height: 120px;
   font-family: inherit;
   line-height: 1.4;
-  
+
   &::placeholder {
     color: ${(props) => props.theme.textSecondary};
   }
-  
+
   &:focus {
     border-color: ${(props) => props.theme.accent};
   }
@@ -215,12 +216,12 @@ const SendButton = styled.button`
   justify-content: center;
   cursor: pointer;
   color: white;
-  
+
   &:hover {
     background: ${(props) => props.theme.accent};
     opacity: 0.9;
   }
-  
+
   &:disabled {
     background: ${(props) => props.theme.textSecondary};
     cursor: not-allowed;
@@ -250,9 +251,9 @@ const Chatbot: React.FC = () => {
       isUser: false,
       timestamp: new Date().toLocaleTimeString("pt-BR", {
         hour: "2-digit",
-        minute: "2-digit"
-      })
-    }
+        minute: "2-digit",
+      }),
+    },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -268,7 +269,9 @@ const Chatbot: React.FC = () => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return;
+    if (!inputValue.trim() || isLoading) {
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -276,17 +279,20 @@ const Chatbot: React.FC = () => {
       isUser: true,
       timestamp: new Date().toLocaleTimeString("pt-BR", {
         hour: "2-digit",
-        minute: "2-digit"
-      })
+        minute: "2-digit",
+      }),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     const currentMessage = inputValue;
     setInputValue("");
     setIsLoading(true);
 
     try {
-      const response = await ChatbotService.sendMessage(sessionId, currentMessage);
+      const response = await ChatbotService.sendMessage(
+        sessionId,
+        currentMessage
+      );
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -294,10 +300,10 @@ const Chatbot: React.FC = () => {
         isUser: false,
         timestamp: new Date().toLocaleTimeString("pt-BR", {
           hour: "2-digit",
-          minute: "2-digit"
-        })
+          minute: "2-digit",
+        }),
       };
-      setMessages(prev => [...prev, botMessage]);
+      setMessages((prev) => [...prev, botMessage]);
     } catch (_error) {
       // Handle error silently
 
@@ -307,10 +313,10 @@ const Chatbot: React.FC = () => {
         isUser: false,
         timestamp: new Date().toLocaleTimeString("pt-BR", {
           hour: "2-digit",
-          minute: "2-digit"
-        })
+          minute: "2-digit",
+        }),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -328,8 +334,8 @@ const Chatbot: React.FC = () => {
 
     // Auto-resize textarea
     const textarea = e.target;
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+    textarea.style.height = "auto";
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
   };
 
   return (
@@ -339,10 +345,12 @@ const Chatbot: React.FC = () => {
           <StatusIndicator />
           <HeaderTitle>Store</HeaderTitle>
         </HeaderLeft>
-        <CloseButton onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(false);
-        }}>
+        <CloseButton
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(false);
+          }}
+        >
           <CloseIcon size={16} />
         </CloseButton>
       </ChatbotHeader>
@@ -370,9 +378,7 @@ const Chatbot: React.FC = () => {
               </div>
             ))}
             {isLoading && (
-              <MessageBubble isUser={false}>
-                Typing...
-              </MessageBubble>
+              <MessageBubble isUser={false}>Typing...</MessageBubble>
             )}
             <div ref={messagesEndRef} />
           </ChatArea>
