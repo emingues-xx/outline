@@ -16,29 +16,30 @@ const ChatbotContainer = styled.div<{ isOpen: boolean }>`
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 450px;
-  height: 600px;
-  background: ${(props) => props.theme.background};
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  width: 400px;
+  height: 500px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   z-index: 1000;
   transform: ${(props) =>
     props.isOpen ? "translateY(0)" : "translateY(calc(100% - 60px))"};
   transition: transform 0.3s ease;
-  border: 1px solid ${(props) => props.theme.divider};
+  border: 1px solid #e5e7eb;
 `;
 
 const ChatbotHeader = styled.div`
-  background: ${(props) => props.theme.accent};
-  color: white;
-  padding: 12px 16px;
-  border-radius: 12px 12px 0 0;
+  background: #f8f9fa;
+  color: #374151;
+  padding: 16px 20px;
+  border-radius: 8px 8px 0 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  border-bottom: 1px solid #e5e7eb;
 `;
 
 const HeaderLeft = styled.div`
@@ -50,7 +51,7 @@ const HeaderLeft = styled.div`
 const StatusIndicator = styled.div`
   width: 8px;
   height: 8px;
-  background: #4ade80;
+  background: #10b981;
   border-radius: 50%;
 `;
 
@@ -62,7 +63,7 @@ const HeaderTitle = styled.span`
 const CloseButton = styled.button`
   background: none;
   border: none;
-  color: white;
+  color: #6b7280;
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -71,37 +72,42 @@ const CloseButton = styled.button`
   justify-content: center;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #e5e7eb;
+    color: #374151;
   }
 `;
 
 const ChatArea = styled.div`
   flex: 1;
-  padding: 16px;
+  padding: 20px;
   overflow-y: auto;
-  background: ${(props) => props.theme.background};
+  background: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 `;
 
 const MessageBubble = styled.div<{ isUser: boolean }>`
-  max-width: 85%;
+  max-width: 80%;
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: 18px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.4;
   align-self: ${(props) => (props.isUser ? "flex-end" : "flex-start")};
-  background: ${(props) =>
-    props.isUser ? props.theme.accent : props.theme.backgroundSecondary};
-  color: ${(props) => (props.isUser ? "white" : props.theme.text)};
-  border: ${(props) =>
-    !props.isUser ? `1px solid ${props.theme.divider}` : "none"};
+  background: ${(props) => (props.isUser ? "#3b82f6" : "#f3f4f6")};
+  color: ${(props) => (props.isUser ? "#ffffff" : "#374151")};
   position: relative;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 
   /* Markdown styling */
   p {
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
     &:last-child {
       margin-bottom: 0;
     }
@@ -109,32 +115,47 @@ const MessageBubble = styled.div<{ isUser: boolean }>`
 
   ul,
   ol {
-    margin: 8px 0;
-    padding-left: 20px;
+    margin: 6px 0;
+    padding-left: 16px;
+    word-wrap: break-word;
   }
 
   li {
-    margin: 4px 0;
+    margin: 2px 0;
+    word-wrap: break-word;
+    word-break: break-word;
   }
 
   code {
-    background: rgba(0, 0, 0, 0.1);
-    padding: 2px 4px;
+    background: ${(props) =>
+      props.isUser ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)"};
+    padding: 2px 6px;
     border-radius: 4px;
-    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
     font-size: 13px;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap;
   }
 
   pre {
-    background: rgba(0, 0, 0, 0.1);
-    padding: 8px;
-    border-radius: 6px;
-    overflow-x: auto;
-    margin: 8px 0;
+    background: ${(props) =>
+      props.isUser ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)"};
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 6px 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-x: hidden;
 
     code {
       background: none;
       padding: 0;
+      word-wrap: break-word;
+      word-break: break-word;
+      white-space: pre-wrap;
     }
   }
 
@@ -147,16 +168,26 @@ const MessageBubble = styled.div<{ isUser: boolean }>`
   }
 
   blockquote {
-    border-left: 3px solid ${(props) => props.theme.accent};
+    border-left: 3px solid
+      ${(props) => (props.isUser ? "rgba(255, 255, 255, 0.5)" : "#d1d5db")};
     padding-left: 12px;
-    margin: 8px 0;
+    margin: 6px 0;
     font-style: italic;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Quebrar URLs longas */
+  a {
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
   }
 `;
 
 const MessageTimestamp = styled.div<{ isUser: boolean }>`
   font-size: 11px;
-  color: ${(props) => props.theme.textSecondary};
+  color: #9ca3af;
   margin-top: 4px;
   text-align: ${(props) => (props.isUser ? "right" : "left")};
 `;
@@ -169,10 +200,10 @@ const MessageStatus = styled.div`
 `;
 
 const InputArea = styled.div`
-  padding: 16px;
-  border-top: 1px solid ${(props) => props.theme.divider};
-  background: ${(props) => props.theme.background};
-  border-radius: 0 0 12px 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+  border-radius: 0 0 8px 8px;
 `;
 
 const InputContainer = styled.div`
@@ -183,11 +214,11 @@ const InputContainer = styled.div`
 
 const MessageInput = styled.textarea`
   flex: 1;
-  padding: 10px 12px;
-  border: 1px solid ${(props) => props.theme.divider};
-  border-radius: 20px;
-  background: ${(props) => props.theme.backgroundSecondary};
-  color: ${(props) => props.theme.text};
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 24px;
+  background: #f9fafb;
+  color: #374151;
   font-size: 14px;
   outline: none;
   resize: none;
@@ -197,16 +228,17 @@ const MessageInput = styled.textarea`
   line-height: 1.4;
 
   &::placeholder {
-    color: ${(props) => props.theme.textSecondary};
+    color: #9ca3af;
   }
 
   &:focus {
-    border-color: ${(props) => props.theme.accent};
+    border-color: #3b82f6;
+    background: #ffffff;
   }
 `;
 
 const SendButton = styled.button`
-  background: ${(props) => props.theme.accent};
+  background: #3b82f6;
   border: none;
   border-radius: 50%;
   width: 36px;
@@ -218,27 +250,26 @@ const SendButton = styled.button`
   color: white;
 
   &:hover {
-    background: ${(props) => props.theme.accent};
-    opacity: 0.9;
+    background: #2563eb;
   }
 
   &:disabled {
-    background: ${(props) => props.theme.textSecondary};
+    background: #9ca3af;
     cursor: not-allowed;
   }
 `;
 
 const Footer = styled.div`
-  padding: 8px 16px;
+  padding: 8px 20px;
   text-align: right;
   font-size: 11px;
-  color: ${(props) => props.theme.textSecondary};
-  background: ${(props) => props.theme.background};
-  border-radius: 0 0 12px 12px;
+  color: #9ca3af;
+  background: #ffffff;
+  border-radius: 0 0 8px 8px;
 `;
 
 const PoweredBy = styled.span`
-  color: ${(props) => props.theme.accent};
+  color: #3b82f6;
   font-weight: 500;
 `;
 
@@ -378,7 +409,7 @@ const Chatbot: React.FC = () => {
               </div>
             ))}
             {isLoading && (
-              <MessageBubble isUser={false}>Typing...</MessageBubble>
+              <MessageBubble isUser={false}>Digitando...</MessageBubble>
             )}
             <div ref={messagesEndRef} />
           </ChatArea>
@@ -389,7 +420,7 @@ const Chatbot: React.FC = () => {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
-                placeholder="Write a message..."
+                placeholder="Digite uma mensagem..."
                 disabled={isLoading}
               />
               <SendButton
