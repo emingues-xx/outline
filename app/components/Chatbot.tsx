@@ -58,6 +58,7 @@ const StatusIndicator = styled.div`
 const HeaderTitle = styled.span`
   font-weight: 600;
   font-size: 14px;
+  color: #3b82f6;
 `;
 
 const CloseButton = styled.button`
@@ -177,11 +178,18 @@ const MessageBubble = styled.div<{ isUser: boolean }>`
     word-break: break-word;
   }
 
-  /* Quebrar URLs longas */
+  /* Links clicáveis */
   a {
     word-wrap: break-word;
     word-break: break-all;
     overflow-wrap: break-word;
+    color: ${(props) => (props.isUser ? "#ffffff" : "#3b82f6")};
+    text-decoration: underline;
+    cursor: pointer;
+    
+    &:hover {
+      color: ${(props) => (props.isUser ? "#e5e7eb" : "#2563eb")};
+    }
   }
 `;
 
@@ -391,18 +399,28 @@ const Chatbot: React.FC = () => {
           <ChatArea>
             {messages.map((message) => (
               <div key={message.id}>
-                <MessageBubble isUser={message.isUser}>
-                  {message.isUser ? (
-                    message.text
-                  ) : (
-                    <ReactMarkdown>{message.text}</ReactMarkdown>
-                  )}
-                  {message.isUser && (
-                    <MessageStatus>
-                      <CheckmarkIcon size={12} />
-                    </MessageStatus>
-                  )}
-                </MessageBubble>
+                                <MessageBubble isUser={message.isUser}>
+                                    {message.isUser ? (
+                                        message.text
+                                    ) : (
+                                        <ReactMarkdown
+                                            components={{
+                                                a: ({ href, children }) => (
+                                                    <a href={href} target="_blank" rel="noopener noreferrer">
+                                                        {children}
+                                                    </a>
+                                                ),
+                                            }}
+                                        >
+                                            {message.text}
+                                        </ReactMarkdown>
+                                    )}
+                                    {message.isUser && (
+                                        <MessageStatus>
+                                            <CheckmarkIcon size={12} />
+                                        </MessageStatus>
+                                    )}
+                                </MessageBubble>
                 <MessageTimestamp isUser={message.isUser}>
                   {message.timestamp}
                 </MessageTimestamp>
