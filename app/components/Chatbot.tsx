@@ -222,7 +222,7 @@ const InputContainer = styled.div`
 
 const MessageInput = styled.textarea`
   flex: 1;
-  padding: 12px 16px;
+  padding: 8px 16px;
   border: 1px solid #d1d5db;
   border-radius: 24px;
   background: #f9fafb;
@@ -230,15 +230,15 @@ const MessageInput = styled.textarea`
   font-size: 14px;
   outline: none;
   resize: none;
-  min-height: 20px;
-  max-height: 120px;
+  min-height: 16px;
+  max-height: 100px;
   font-family: inherit;
   line-height: 1.4;
-
+ 
   &::placeholder {
     color: #9ca3af;
   }
-
+ 
   &:focus {
     border-color: #3b82f6;
     background: #ffffff;
@@ -374,7 +374,7 @@ const Chatbot: React.FC = () => {
     // Auto-resize textarea
     const textarea = e.target;
     textarea.style.height = "auto";
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
+    textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px";
   };
 
   return (
